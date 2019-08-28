@@ -1,0 +1,16 @@
+
+10-05-2019 16:05:55 root:ERROR:hhh
+Traceback (most recent call last):
+  File "C:\Users\17711\OneDrive\PythonCode\老男孩Python全栈开发\day26_约束_自定义异常_加密、日志模块\loging日志.py", line 32, in <module>
+    c = a / b
+ZeroDivisionError: division by zero
+10-05-2019 16:05:55 root:ERROR:Error 除数不能为0
+Traceback (most recent call last):
+  File "C:\Users\17711\OneDrive\PythonCode\老男孩Python全栈开发\day26_约束_自定义异常_加密、日志模块\loging日志.py", line 32, in <module>
+    c = a / b
+ZeroDivisionError: division by zero
+10-05-2019 16:05:55 root:ERROR:Log除数不能为0
+Traceback (most recent call last):
+  File "C:\Users\17711\OneDrive\PythonCode\老男孩Python全栈开发\day26_约束_自定义异常_加密、日志模块\loging日志.py", line 32, in <module>
+    c = a / b
+ZeroDivisionError: division by zero

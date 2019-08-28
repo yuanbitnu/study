@@ -1,0 +1,33 @@
+一、自定义一个RequestHandlerClass类，取名为MyTCpHandler，
+
+
+二、创建 ThreadingTcpServer(ThreadingMixin,TcpServer)对象，调用其__init__方法
+    ThreadingTcpServer无init方法 ---> 按照继承顺序寻找__init__方法 --->ThreadingMixin(无init);TcpServer(BaseServer) 中有init
+            (一)、执行 TcpServer(BaseServer) init方法
+                1、执行父类 BaseServer 中的init方法，即初始化BaseServer中的属性
+                2、创建socket对象，绑定IP、PORT,设置监听队列
+
+
+三、执行 ThreadingTCPServer 实例中的 server_forever() 方法，按照ThreadingTcpServer(ThreadingMixin,TcpServer)继承顺序寻找。ThreadMixin(无该方法); TcpServer(Baseserver)中无该方法，按照继承顺序去BaseServer中寻找。
+    (一)、执行BaseServer中的 server_forever()方法
+        1、循环判断__shutdown_request，为False则进入循环 ，为True则跳出循环
+        2、进入循环后执行 _handle_request_noblock() 方法;此方法为BaseServer中的隐藏方法
+            (1)、执行上述方法中self.get_request()方法 -->按照继承顺序在TcpServer中找到此方法
+                1、在上述方法中执行socket.accept() 返回 request和client_address
+        3、验证返回的 request和client_address
+        4、传入第3步返回的结果 ,执行self.process_request(request,client_address)方法 -->按照继承顺序在 ThreadingMixin 中找到此方法
+            (1)、执行 self.process_request_thread(request,client_address)方法(创建线程)
+                1、上述方法中执行self.finish_request(request, client_address) -->按照继承顺序在BaseServer中找到此方法
+                    1、在finish_request()中执行 self.RequestHandlerClass(request, client_address, self)
+                    -->按照继承顺序在BaseServer属性中找到RequestHandlerClass类名
+                        1、创建RequestHandlerClass对象(self.RequestHandlerClass(request, client_address, self),self为ThreadTcpServer对象)，即自定义的MyTcpHandler类对象
+                        MyTcpHandler(request, client_address)
+
+四、创建MyTcpHandler(request, client_address，server)对象，server为一个线程的-->按照继承顺序在socketserver.BaseRequestHandler类中找到init方法
+    (一)、初始化 request client_address server server为ThreadTcpServer对象
+    (二)、执行self.handle()方法 -->按照继承顺序,在MyHandler实例对象中找到 handle()方法
+
+
+
+
+
