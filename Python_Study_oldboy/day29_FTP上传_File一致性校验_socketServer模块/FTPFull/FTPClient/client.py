@@ -21,7 +21,7 @@ class FtpClient():
     def __init__(self, user, pwd, server_IP_PORT, user_mainpath=None):
         self.user = user
         self.pwd = pwd
-        self.user_mainpath = user_mainpath
+        self.user_mainpath = user_mainpath  #不同用户的主目录
         # self.user_log_ABSpath = user_log_ABSpath
         self.server_IP_PORT = server_IP_PORT
         self.request = socket.socket()
@@ -30,6 +30,9 @@ class FtpClient():
 
     @staticmethod
     def get_logger(user):
+        '''
+            向用户目录中的log.txt中写入日志
+        '''
         logger = logging.getLogger(user)
 
         handler_file = logging.FileHandler(
@@ -52,9 +55,6 @@ class FtpClient():
 
     @staticmethod
     def md5_encry(value, value_type='value'):
-        '''
-        value_type default is "value",if the first argument is file that value_type will set "file_path"
-        '''
         md5_obj = hashlib.md5()
         if value_type == 'value':
             md5_obj.update(value.encode(encoding='utf-8'))
