@@ -15,38 +15,46 @@ import time
 
 class FtpClient():
     ClientFtp_mainPath = 'D:\\ClientFtp_mainPath'  # client客户端主目录
-    user_log_ABSpath = None
-    _file_suffix = '.dmp'
+    user_log_ABSpath = None  #用户日志文件绝对路径--用户登录成功后确定路径
+    _file_suffix = '.dmp' # 后缀名
 
-    def __init__(self, user, pwd, server_IP_PORT, user_mainpath=None):
+    def __init__(self, server_IP_PORT,user = None, pwd = None,  user_mainpath=None):
         self.user = user
         self.pwd = pwd
-        self.user_mainpath = user_mainpath
-        # self.user_log_ABSpath = user_log_ABSpath
-        self.server_IP_PORT = server_IP_PORT
-        self.request = socket.socket()
-        self.request.connect(server_IP_PORT)
-        self.logger = None
+        self.user_mainpath = user_mainpath  # 用户主目录--初始为None,登录成功后赋值
+        self.server_IP_PORT = server_IP_PORT #ip和port组成的元组
+        self.request = socket.socket() # client端socket对象
+        self.request.connect(server_IP_PORT) # 连接服务器
+        self.logger = None #客户端logger对象,登录成功后跟用户绑定
 
     @staticmethod
     def get_logger(user):
-        logger = logging.getLogger(user)
+        '''为登录成功后的用户创建logger对象
+        
+        Arguments:
+            user {str} -- 用户名
+        
+        Returns:
+            logger -- 指定用户的logger对象
+        '''
+        logger = logging.getLogger(user) # 根据user创建logger对象
 
         handler_file = logging.FileHandler(
-            FtpClient.user_log_ABSpath, mode='a+', encoding="utf-8")
-        handler_stream = logging.StreamHandler()
+            FtpClient.user_log_ABSpath, mode='a+', encoding="utf-8") # 创建文件处理器(handler),日志将写入指定文件
+        handler_stream = logging.StreamHandler() # 创建流处理器(handler),日志写入输出设备
 
-        logger.setLevel(logging.DEBUG)
-        handler_file.setLevel(logging.INFO)
-        handler_stream.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG) #为logger设定输出最低级别的日志
+        handler_file.setLevel(logging.INFO) #为文件处理器设定输出的最低级别的日志
+        handler_stream.setLevel(logging.DEBUG) ##为流处理器设定输出的最低级别的日志
+        ###注意,logger的最低级别为最终最低级别,任何handler都要参考logger的级别
 
         formatter = logging.Formatter(
-            fmt="%(asctime)s %(name)s %(levelname)s %(message)s", datefmt="%d-%m-%Y %H:%M:%S")
+            fmt="%(asctime)s %(name)s %(levelname)s %(message)s", datefmt="%d-%m-%Y %H:%M:%S") # 创建格式化器,规定日志的输出格式
 
-        handler_file.setFormatter(formatter)
+        handler_file.setFormatter(formatter) # 为处理器添加格式化器
         handler_stream.setFormatter(formatter)
 
-        logger.addHandler(handler_file)
+        logger.addHandler(handler_file) # 将处理器加入logger对象
         logger.addHandler(handler_stream)
         return logger
 
@@ -65,16 +73,21 @@ class FtpClient():
                     md5_obj.update(line)
                 return md5_obj.hexdigest()
 
-    def login(self, user, pwd):
+    def login(self):
+        '''使用用户输入的user,pwd进行登录,如果登录成功则更新ftp_client中的user和pwd属性
+        Returns:
+            integer -- 状态码 0-成功|
         '''
-        return 0 为登陆成功
-        '''
+        user = input('请输入用户名：>>>>')
+        pwd = input('请输入密码：>>>>')
         while True:
-            self.send_head(action="login", name=user, password=pwd)
-            head = self.recive_head()
+            self.send_head(action="login", name=user, password=pwd) #拼接head后发送给服务器
+            head = self.recive_head() #接受服务器的返回head
             if head['action'] == 'return_code':
                 recv_code = head['code']
-                if recv_code == '0':
+                if recv_code == '0': ## 通过身份验证,并将该userinfo设置self中的user和pwd字段的值
+                    self.user = user
+                    self.pwd = pwd
                     return 0
                 elif recv_code == '1':
                     print('用户名错误，请重新输入')
@@ -101,11 +114,16 @@ class FtpClient():
         return file_lis
 
     def send_file_isdir_or_isfile(self, path):
-        if os.path.isdir(path):
-            all_fileAbsPath_lis = self.get_all_fileAbsPath(path)
-            for item in all_fileAbsPath_lis:
+        '''发送文件或者发送整个文件夹
+        
+        Arguments:
+            path {str} -- 一个路径(文件绝对路径 or 文件夹路径)
+        '''
+        if os.path.isdir(path): #如果path是文件夹
+            all_fileAbsPath_lis = self.get_all_fileAbsPath(path) # 获取该文件夹下所有文件绝对路径,并加入一个list
+            for item in all_fileAbsPath_lis:# 循环发送该list中的所有文件
                 self.send_file(item)
-        elif os.path.isfile(path):
+        elif os.path.isfile(path): # 如果path是文件
             self.send_file(path)
 
     def send_file(self, file_path):
@@ -200,20 +218,18 @@ class FtpClient():
 
 
 if __name__ == '__main__':
-    user = input('请输入用户名：>>>>')
-    pwd = input('请输入密码：>>>>')
     ip = input('请输入IP地址：>>>>')
     port = input('请输入端口号：>>>>')
     Ip_Port = (ip, int(port))
-    ftp_client = FtpClient(user, pwd, Ip_Port)
-    if ftp_client.login(user, pwd) == 0:
+    ftp_client = FtpClient(Ip_Port)
+    if ftp_client.login() == 0:
         ftp_client.user_mainpath = os.path.join(
-            FtpClient.ClientFtp_mainPath, user)
+            FtpClient.ClientFtp_mainPath, ftp_client.user)
         if not os.path.exists(ftp_client.user_mainpath):
             os.makedirs(ftp_client.user_mainpath)  # 在客户端为用户新建client用户目录
         FtpClient.user_log_ABSpath = os.path.join(
             ftp_client.user_mainpath, 'log.txt')  # 拼接客户端log.txt文件名
-        ftp_client.logger = FtpClient.get_logger(user)
+        ftp_client.logger = FtpClient.get_logger(ftp_client.user)
         ftp_client.logger.debug('登录成功，用户目录为：%s' % ftp_client.user_mainpath)
         while True:
             cmd = input('请输入操作命令>>>>')

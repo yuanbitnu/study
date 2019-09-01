@@ -331,7 +331,7 @@ class ServerHandler(socketserver.BaseRequestHandler):
 
 
 socketserver = socketserver.ThreadingTCPServer(
-    ("192.168.1.102", 8888), ServerHandler)
+    ("127.0.0.1", 8888), ServerHandler)
 socketserver.serve_forever()
 
 
