@@ -13,11 +13,7 @@
             "cwd": "${fileDirname}"
         },
         {
-<<<<<<< HEAD
-            "name": "Python: 调试器二",
-=======
             "name": "Python: 解释器二",
->>>>>>> d8d04ebc7054e826c4e965994439c2c17dcb1c0d
             "type": "python",
             "request": "launch",
             "program": "${file}",
