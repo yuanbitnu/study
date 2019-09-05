@@ -225,11 +225,13 @@ class ServerHandler(socketserver.BaseRequestHandler):
                 break
 
     def recive_file(self, head):
-        remote_file_Abspath = head['file_path']
-        file_base_name = os.path.basename(remote_file_Abspath)
-        local_file_Abspath = os.path.join(self.user_mainpath, file_base_name)
         file_size = head['file_size']
         file_md5_val = head['file_md5_val']
+        last_dir = head['last_dir']
+        local_file_Abspath = os.path.join(self.user_mainpath, last_dir)
+        local_file_dir = os.path.dirname(local_file_Abspath)
+        if not os.path.exists(local_file_dir):
+            os.makedirs(local_file_dir)
 
         has_recv_data_len = 0
         with open(local_file_Abspath, mode='wb') as file_stream:

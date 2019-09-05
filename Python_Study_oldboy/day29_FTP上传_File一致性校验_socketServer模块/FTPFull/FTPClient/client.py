@@ -117,19 +117,21 @@ class FtpClient():
             path {str} -- 一个路径(文件绝对路径 or 文件夹路径)
         '''
         if os.path.isdir(path): #如果path是文件夹
+            upper_level_path = os.path.basename(path)
             all_fileAbsPath_lis = self.get_all_fileAbsPath(path) # 获取该文件夹下所有文件绝对路径,并加入一个list
             for item in all_fileAbsPath_lis:# 循环发送该list中的所有文件
-                self.send_file(item)
+                ahead_dir_len = len(path) - len(upper_level_path)
+                last_dir = item[ahead_dir_len:]
+                self.send_file(item,last_dir = last_dir)
         elif os.path.isfile(path): # 如果path是文件
             self.send_file(path)
 
-    def send_file(self, file_path):
+    def send_file(self, file_path,last_dir = None):
         times = 0
         while True:
             file_total_size = os.path.getsize(file_path)
             md5_val = self.md5_encry(file_path, value_type='file_path')
-            self.send_head(action='send_file', file_path=file_path, file_size=file_total_size,
-                           file_md5_val=md5_val)
+            self.send_head(action='send_file', file_path=file_path, file_size=file_total_size,file_md5_val=md5_val,last_dir = last_dir)
             with open(file_path, mode='rb') as file_stream:
                 for line in file_stream:
                     self.request.send(line)
