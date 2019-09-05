@@ -117,13 +117,13 @@ class FtpClient():
             path {str} -- 一个路径(文件绝对路径 or 文件夹路径)
         '''
         if os.path.isdir(path): #如果path是文件夹
-            upper_level_path = os.path.basename(path)
+            upper_level_path = os.path.basename(path) #path文件夹的上一级目录
             all_fileAbsPath_lis = self.get_all_fileAbsPath(path) # 获取该文件夹下所有文件绝对路径,并加入一个list
             for item in all_fileAbsPath_lis:# 循环发送该list中的所有文件
-                ahead_dir_len = len(path) - len(upper_level_path)
-                last_dir = item[ahead_dir_len:]
+                ahead_dir_len = len(path) - len(upper_level_path) # 获取文件路径的前部分长度
+                last_dir = item[ahead_dir_len:] #切片获取文件的后部分
                 self.send_file(item,last_dir = last_dir)
-        elif os.path.isfile(path): # 如果path是文件
+        elif os.path.isfile(path): # 如果path是文件,last_dir为None
             self.send_file(path)
 
     def send_file(self, file_path,last_dir = None):
