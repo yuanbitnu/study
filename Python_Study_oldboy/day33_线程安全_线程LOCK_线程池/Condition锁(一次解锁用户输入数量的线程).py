@@ -44,9 +44,13 @@ lock = threading.Condition()  ## 一次解锁三个线程
 print('主线程开始位置')
 
 def input_fun():
+    num = int(input('输入数量>>>>')) ## 输入用户想要解锁的数量
     while True:
-        input('输入数量>>>>') ## 输入用户想要解锁的数量
-        return True
+        if num > 0:
+            num -= 1
+            return True
+        else:
+            return False
 
 def fun(item):
     current_thread = threading.current_thread()
