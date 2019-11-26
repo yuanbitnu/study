@@ -8,4 +8,4 @@ print(dirpath)
 sys.path.append(dirpath)
 #启动爬虫,第三个参数为爬虫Name
 #execute(['scrapy','crawl','quotes','-o','quotes.json']) ##将内容写入json文件中
-execute(['scrapy','crawl','quotes','-o','quotes.jl'])#将内容写入Json Lines中
+execute(['scrapy','crawl','author','-o','author_description.jl'])#将内容写入Json Lines中
