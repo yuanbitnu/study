@@ -1,0 +1,65 @@
+{
+  "id": "1624560",
+  "name": "vueShoopStorage",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1277226",
+      "name": "订单管理",
+      "font_class": "6",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "1631398",
+      "name": "用户组",
+      "font_class": "usergroup",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "1883240",
+      "name": "商品管理",
+      "font_class": "goodsmanagement",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "3956122",
+      "name": "数据统计",
+      "font_class": "kujialeqiyezhan_shujutongji",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "4073907",
+      "name": "权限管理",
+      "font_class": "permission",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "7408750",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "8551035",
+      "name": "详情",
+      "font_class": "xiangqing",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "8622867",
+      "name": "yonghu",
+      "font_class": "yonghu",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    }
+  ]
+}
