@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/components/Login.vue'
 import Home from '../views/components/Home.vue'
+import Welcome from '../views/components/Welcome.vue'
+import Users from '../views/components/users/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +18,12 @@ const routes = [
   },
   {
     path: '/home',
-    component: Home
+    component: Home,
+    redirect: '/welcome',
+    children: [
+      { path: '/welcome', component: Welcome },
+      { path: '/users', component: Users }
+    ]
   }
 ]
 
@@ -25,7 +32,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // to and from are both route objects. must call `next`.
+  // 导航守卫
   // to:表示要访问的页面 from:表示从哪个页面来 next() 表示允许跳转的页面  无参数表示放行 有参数表示需要挑战到的具体页面
   if (to.path === '/login') return next()
   if (to.path !== '/login') {

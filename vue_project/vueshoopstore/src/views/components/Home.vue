@@ -8,120 +8,38 @@
       <el-button size="small" type="info" @click="logout">退出登录</el-button>
     </el-header>
     <el-container>
-      <el-aside width="350px">
+      <el-aside :width="iscollapse ? '80px':'350px'">
+        <div class="menuCollapse" @click="menuCollClick">|||</div>
         <el-menu
-          :default-active="activeIndex"
-          @open="handleOpen"
-          @close="handleClose"
+          :default-active="$route.path"
           background-color="#313743"
           text-color="#fff"
-          active-text-color="#ffd04b"
-          :unique-opened= "isUniqueOpen"
+          active-text-color="#0078D7"
+          :unique-opened= "true"
           :default-openeds = 'defaultOpens'
+          :router = 'true'
+          :collapse-transition = 'false'
+          :collapse = 'iscollapse'
         >
-          <el-submenu index="1">
+          <el-submenu :index="'/' + menu.path" v-for="menu in menuList" :key="menu.id">
             <template slot="title">
               <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-usergroup"></use>
+                <use :xlink:href="iconsList[menu.id]"></use>
               </svg>
-              <span>用户管理</span>
+              <span>{{menu.authName}}</span>
             </template>
-            <el-menu-item index="1-1-1" >
+            <el-menu-item :index="'/' +item.path + ''" v-for="item in menu.children" :key ="item.id">
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="1-2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-permission"></use>
-              </svg>
-              <span>权限管理</span>
-            </template>
-              <el-menu-item index="2-1">
-                <template slot="title">
-                  <i class="el-icon-menu"></i>
-                  <span>item一</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <template slot="title">
-                  <i class="el-icon-menu"></i>
-                  <span>item一</span>
-                </template>
-              </el-menu-item>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-goodsmanagement"></use>
-              </svg>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item index="3-1">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="3-2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>
-          <el-submenu index="4">
-            <template slot="title">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-6"></use>
-              </svg>
-              <span>订单管理</span>
-            </template>
-              <el-menu-item index="4-1">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-              </el-menu-item>
-              <el-menu-item index="4-2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-              </el-menu-item>
-          </el-submenu>
-          <el-submenu index="5">
-            <template slot="title">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-kujialeqiyezhan_shujutongji"></use>
-              </svg>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="5-1">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="5-2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>item一</span>
+                <span>{{item.authName}}</span>
               </template>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -131,17 +49,30 @@ export default {
   data () {
     return {
       activeName: '',
-      activeIndex: '1',
-      isUniqueOpen: true,
-      defaultOpens: ['1']
+      /* isUniqueOpen: true, */
+      iscollapse: false,
+      defaultOpens: ['125'],
+      menuList: [],
+      iconsList: {
+        125: '#icon-usergroup',
+        103: '#icon-permission',
+        101: '#icon-goodsmanagement',
+        102: '#icon-6',
+        145: '#icon-kujialeqiyezhan_shujutongji'
+      }
     }
   },
+  created () { // 生命周期函数,页面加载完调用该方法
+    this.getMenuList()
+  },
   methods: {
-    handleOpen (index, indexPath) {
-      console.log(index, indexPath)
+    async getMenuList () {
+      const { data: res } = await this.$http.get('menus')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menuList = res.data
     },
-    handleClose (index, indexPath) {
-      console.log(index, indexPath)
+    menuCollClick () {
+      this.iscollapse = !this.iscollapse
     },
     logout () {
       window.sessionStorage.removeItem('token')
@@ -159,6 +90,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.menuCollapse{
+  text-align: center;
+  line-height: 21px;
+  font-size: 10px;
+  color: #fff;
+  background-color: #4C718C;
+  cursor: pointer;
+}
 .icon {
   width: 2em;
   height: 2em;
@@ -174,11 +113,9 @@ export default {
   overflow: hidden;
 }
 .el-menu{
+  border-right: none;
   .el-submenu{
-    margin-top: 20px
-;  }
-  svg{
-    padding-left: 20px;
+    margin-top: 20px;
   }
   span{
     font-size: 18px;
@@ -216,9 +153,9 @@ export default {
 }
 .el-main {
   background-color: #e9edf1;
-  color: #333;
+/*   color: #333;
   text-align: center;
-  line-height: 160px;
+  line-height: 160px; */
 }
 body > .el-container {
   margin-bottom: 40px;

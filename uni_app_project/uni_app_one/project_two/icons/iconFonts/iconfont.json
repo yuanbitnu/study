@@ -1,0 +1,37 @@
+{
+  "id": "1660345",
+  "name": "wachat_two",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "451567",
+      "name": "待发货",
+      "font_class": "daifahuo",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "485744",
+      "name": "待付 款",
+      "font_class": "daifukuan",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "1212411",
+      "name": "退换货",
+      "font_class": "tuihuanhuo",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "2811146",
+      "name": "待收货",
+      "font_class": "daishouhuo",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    }
+  ]
+}

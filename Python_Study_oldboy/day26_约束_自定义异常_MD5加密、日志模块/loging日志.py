@@ -41,14 +41,14 @@ Formatter：格式化器, 指明了最终输出中日志记录的布局。
 #   2.logger.addHandler(handler)
 
 
-# logging.basicConfig(handlers=[logging.FileHandler('test_two.log', encoding='utf-8')], format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
-#                     datefmt="%d-%M-%Y %H:%M:%S", level=logging.ERROR)
-# a = 5
-# b = 0
-# try:
-#     c = a / b
-# except Exception as e:
-#     logging.exception('hhh')  # 方式一
+logging.basicConfig(handlers=[logging.FileHandler('test_two.log', encoding='utf-8')], format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+                    datefmt="%d-%M-%Y %H:%M:%S", level=logging.ERROR)
+a = 5
+b = 0
+try:
+    c = a / b
+except Exception as e:
+    logging.exception('hhh')  # 方式一
 #     logging.error('Error 除数不能为0', exc_info=True)  # 方式二、必须将exc_info 设置为True
 
 #     logging.log(level=logging.ERROR, msg='Log除数不能为0', exc_info=True) # 方式三、必须设置日志级别以及exc_info 必须设为True

@@ -3,3 +3,20 @@ html, body, #app{
     margin: 0;
     padding: 0;
 }
+.el-card{
+    margin-top: 20px;
+}
+.el-table{
+    margin-top: 16px;
+}
+.el-pagination{
+    margin-top: 16px;
+}
+/* 更改添加用户界面输入框校验结果反馈图标的颜色和大小 */
+.el-icon-circle-check{
+    color: greenyellow;
+    font-size: 18px;
+}
+.el-icon-circle-close{
+    font-size: 18px;
+}
