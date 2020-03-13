@@ -1,12 +1,23 @@
+import time
+import datetime
+
 class ToolsHelp:
     @staticmethod
-    def formateData(data:tuple,orclCloumnTitle:list,tableName:str = None):
-        cloumnTitles = [item[0] for item in orclCloumnTitle]
+    def formateData(data:tuple,orclCloumnTitle:list):
+        cloumnTitles = [item[0].lower() for item in orclCloumnTitle]
         formatedData = []
         for rowData in data:
             dictData = dict(zip(cloumnTitles,rowData))
             formatedData.append(dictData)
-        if tableName == None:
-            return formatedData
-        else:
-            return {tableName:formatedData}
+        return formatedData
+    
+    @staticmethod
+    def getCurrentTime():
+        timeStamp = int(time.time())
+        timeArray = time.localtime(timeStamp)
+        return time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+
+if __name__ == '__main__':
+    res = ToolsHelp.getCurrentTime()
+    print(res,type(res))

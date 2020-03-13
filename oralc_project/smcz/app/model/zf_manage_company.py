@@ -11,7 +11,7 @@ from model import oracle
 from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
-def getManageCompanys(tableName = None):
+def getManageCompanys():
     comStr = 'select * from zf_manage_company' # 查询字符串
     try:
         connection = pool.acquire() # 对oracle连接对象池中获取连接
@@ -19,10 +19,7 @@ def getManageCompanys(tableName = None):
         cursor.execute(comStr) # 执行SQL语句
         content = cursor.fetchall() # 获取行数据,返回一个元组类型的list列表
         cloumns = cursor.description # 获取当前表查询的列名
-        if tableName != None:
-            return ToolsHelp.formateData(content,cloumns,tableName) # 调用formateData()工具方法格式化数据
-        else:
-            return ToolsHelp.formateData(content,cloumns)
+        return ToolsHelp.formateData(content,cloumns) # 调用formateData()工具方法格式化数据
     except oracle.DatabaseError as msg:
         logging.info(msg)
         return StatuCode.selectTabelError.value
@@ -105,5 +102,5 @@ if __name__ == "__main__":
     # ret = updateManageCompany(8,'石门县住保办')
     # ret = delManageCompany('石门县主板宝')
     ret = delManageCompany(ManageCompanyName='石门县住保办')
-    res = getManageCompanys('zf_manage_company')
+    res = getManageCompanys()
     print(res,ret)

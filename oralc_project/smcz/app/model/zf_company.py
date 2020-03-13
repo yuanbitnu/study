@@ -11,18 +11,16 @@ from model import oracle
 from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
-def getCompanys(tableName = None):
-    comStr = 'select * from zf_company' # 查询字符串
+
+def getCompanysByLevel(level:int):
+    comStr = 'select * from zf_companys t where t.levelid = :id'
     try:
         connection = pool.acquire() # 对oracle连接对象池中获取连接
         cursor = connection.cursor() # 获取游标
-        cursor.execute(comStr) # 执行SQL语句
+        cursor.execute(comStr,(level,)) # 执行SQL语句
         content = cursor.fetchall() # 获取行数据,返回一个元组类型的list列表
         cloumns = cursor.description # 获取当前表查询的列名
-        if tableName != None:
-            return ToolsHelp.formateData(content,cloumns,tableName) # 调用formateData()工具方法格式化数据
-        else:
-            return ToolsHelp.formateData(content,cloumns)
+        return ToolsHelp.formateData(content,cloumns) # 调用formateData()工具方法格式化数据
     except oracle.DatabaseError as msg:
         logging.info(msg)
         return StatuCode.selectTabelError.value
@@ -33,78 +31,26 @@ def getCompanys(tableName = None):
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def insertCompany(companyName,mcNum):
-    comStr = 'insert into zf_company (c_name,c_mc_num) values (:name,:mc_num)' # 带参数的插入语句
-    try:
-        connection = pool.acquire()
-        cursor = connection.cursor()
-        cursor.execute(comStr,{'name':companyName,'mc_num':mcNum}) # 带参数的执行语句
-        connection.commit() # 通过连接对象提交
-        return StatuCode.successCode.value
-    except oracle.DatabaseError as msg:
-        logging.info(msg)
-        return StatuCode.insertDataError.value
-    except Exception as e:
-        logging.info(e)
-        return StatuCode.unknowError.value
-    finally:
-        cursor.close() # 关闭游标
-        pool.release(connection) # 释放连接对象回连接池
-
-def delCompany(id:int = None,companyName:str = None): 
-    comStr = ''
-    paramers = None
-    if id == None and companyName != None:
-        comStr = 'delete from zf_company where c_name = :arg'
-        paramers = (companyName,)
-    elif id !=None and companyName == None:
-        comStr = 'delete from zf_company where c_id = :arg'
-        paramers = (id,)
-    elif id != None and companyName != None:
-        comStr = 'delete from zf_company where c_id = :id and c_name = :name'
-        paramers = {'id':id,'name':companyName}
+def getcompanyTree():
+    lev_one = getCompanysByLevel(1)
+    lev_two = getCompanysByLevel(2)
+    lev_three = getCompanysByLevel(3)
+    if type(lev_one) == list and type(lev_two) == list and type(lev_three) == list:
+        for twoItem in lev_two:
+            twoItem.update({"children":[]})
+            for threeItem in lev_three:
+                threeItem.update({"children":[]})
+                if threeItem['pid'] == twoItem['compid']:
+                    twoItem['children'].append(threeItem)
+        for oneItem in lev_one:
+            oneItem.update({"children":[]})
+            for twoItem in lev_two:
+                if twoItem['pid'] == oneItem['compid']:
+                    oneItem['children'].append(twoItem)
+        return [{"compid":0,"compname":"石门县","pid":-1,"levelid":0,"children":lev_one}]
     else:
-        logging.info('未指定查询语句')
-    try:
-        connection = pool.acquire()
-        cursor = connection.cursor()
-        cursor.execute(comStr,paramers) # 带参数的执行语句
-        connection.commit() # 通过连接对象提交
-        return StatuCode.successCode.value
-    except oracle.DatabaseError as msg:
-        logging.info(msg)
-        return StatuCode.deleteDataError.value
-    except Exception as e:
-        logging.info(e)
-        return StatuCode.unknowError.value
-    finally:
-        cursor.close() # 关闭游标
-        pool.release(connection) # 释放连接对象回连接池
-    
-def updateCompany(id,newCompanyName):
-    comStr = 'update zf_company t set t.c_name = :name where t.c_id = :id' # 更新语句
-    try:
-        connection = pool.acquire()
-        cursor = connection.cursor()
-        cursor.execute(comStr,{'name':newCompanyName,'id':id}) # 参数为dict的执行语句,通过key匹配值
-        connection.commit() # 通过连接对象提交
-        return StatuCode.successCode.value
-    except oracle.DatabaseError as msg:
-        logging.info(msg)
-        return StatuCode.insertDataError.value
-    except Exception as e:
-        logging.info(e)
-        return StatuCode.unknowError.value
-    finally:
-        cursor.close() # 关闭游标
-        pool.release(connection) # 释放连接对象回连接池
-
+        return StatuCode.errorCode.value
 
 if __name__ == "__main__":
-    # insertCompany('石门县住建局',2)
-    # updateCompany(21,'石门县住保办')
-    # ret = delCompany('石门县主板宝')
-    # ret = delCompany(companyName='石门县住保办')
-    # ret = updateCompany(9,'石门县文学艺术联合会')
-    res = getCompanys('zf_company')
-    print(res,ret)
+    res = getcompanyTree()
+    print(res)

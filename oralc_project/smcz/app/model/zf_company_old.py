@@ -11,14 +11,8 @@ from model import oracle
 from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
-
-''' 获取角色列表
-
-Returns:
-    list | dict -- 返回list角色列表或json格式dict
-'''
-def getRoles():
-    comStr = 'select * from zf_role' # 查询字符串
+def getCompanys():
+    comStr = 'select * from zf_company' # 查询字符串
     try:
         connection = pool.acquire() # 对oracle连接对象池中获取连接
         cursor = connection.cursor() # 获取游标
@@ -36,12 +30,12 @@ def getRoles():
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def insertRole(roleName):
-    comStr = 'insert into zf_role (r_name) values (:roleName)' # 带参数的插入语句
+def insertCompany(companyName,mcNum):
+    comStr = 'insert into zf_company (c_name,c_mc_num) values (:name,:mc_num)' # 带参数的插入语句
     try:
         connection = pool.acquire()
         cursor = connection.cursor()
-        cursor.execute(comStr,(roleName,)) # 带参数的执行语句
+        cursor.execute(comStr,{'name':companyName,'mc_num':mcNum}) # 带参数的执行语句
         connection.commit() # 通过连接对象提交
         return StatuCode.successCode.value
     except oracle.DatabaseError as msg:
@@ -54,18 +48,18 @@ def insertRole(roleName):
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def delRoles(id:int = None,roleName:str = None): 
+def delCompany(id:int = None,companyName:str = None): 
     comStr = ''
     paramers = None
-    if id == None and roleName != None:
-        comStr = 'delete from zf_role where r_name = :arg'
-        paramers = (roleName,)
-    elif id !=None and roleName == None:
-        comStr = 'delete from zf_role where r_id = :arg'
+    if id == None and companyName != None:
+        comStr = 'delete from zf_company where c_name = :arg'
+        paramers = (companyName,)
+    elif id !=None and companyName == None:
+        comStr = 'delete from zf_company where c_id = :arg'
         paramers = (id,)
-    elif id != None and roleName != None:
-        comStr = 'delete from zf_role where r_id = :id and r_name = :roleName'
-        paramers = (id,roleName)
+    elif id != None and companyName != None:
+        comStr = 'delete from zf_company where c_id = :id and c_name = :name'
+        paramers = {'id':id,'name':companyName}
     else:
         logging.info('未指定查询语句')
     try:
@@ -84,12 +78,12 @@ def delRoles(id:int = None,roleName:str = None):
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
     
-def updateRole(id,newRoleName):
-    comStr = 'update zf_role t set t.r_name = :name where t.r_id = :id' # 更新语句
+def updateCompany(id,newCompanyName):
+    comStr = 'update zf_company t set t.c_name = :name where t.c_id = :id' # 更新语句
     try:
         connection = pool.acquire()
         cursor = connection.cursor()
-        cursor.execute(comStr,{'name':newRoleName,'id':id}) # 参数为dict的执行语句,通过key匹配值
+        cursor.execute(comStr,{'name':newCompanyName,'id':id}) # 参数为dict的执行语句,通过key匹配值
         connection.commit() # 通过连接对象提交
         return StatuCode.successCode.value
     except oracle.DatabaseError as msg:
@@ -104,10 +98,10 @@ def updateRole(id,newRoleName):
 
 
 if __name__ == "__main__":
-    # insertRole('出纳3')
-    # res = getRoles()
-    # print(res)
-    # delRoles(roleName='出纳3')
-    # updateRole(3,'出纳2')
-    res = getRoles()
+    # insertCompany('石门县住建局',2)
+    # updateCompany(21,'石门县住保办')
+    # ret = delCompany('石门县主板宝')
+    # ret = delCompany(companyName='石门县住保办')
+    # ret = updateCompany(9,'石门县文学艺术联合会')
+    res = getCompanys()
     print(res)
