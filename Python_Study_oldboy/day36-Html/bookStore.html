@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type = 'text/css'>
+    *{
+        margin: 0px;
+        padding: 0px;
+    }
+    #app{
+        width: 400px;
+        height: auto;
+        margin: 0px auto;
+    }
+    h1{
+        background-color:cadetblue;
+        text-align: center;
+    }
+    .item{
+        width: 380px;
+        height: 64px;
+        padding: 6px 0 6px 20px;
+        border-bottom: 2px solid cadetblue;
+        display: flex;
+        align-items: center;
+        background-color: ghostwhite;
+    }
+    .item >:first-child{
+        padding-right: 150px;
+    }
+    .item input{
+        width: 40px;
+        margin: 0 5px 0 5px;
+    }
+    .a_num{
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        text-decoration: none;
+        font-size: 22px;
+    }
+    .a_img{
+        display: flex;
+        align-items: center;
+        width: 30px;
+        height: 48px;
+        line-height: 48px;
+        padding-left: 20px;
+    }
+    .count{
+        float: right;
+        width: 100%;
+        height: 40px;
+    }
+
+    </style>
+    <script src="" type="text/javascript"></script>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>我的商品</h1>
+        <div id ="list">
+            <div class="item">
+                <img src="./img/huawei_logo.ico">
+                <a class="a_num" href="JavaScript:;">-</a>
+                <input type="text">
+                <a class="a_num" href="JavaScript:;">+</a>
+                <a class="a_img" href="JavaScript:;"><img src="./img/close_24px.ico"></a>
+            </div>
+        </div>
+        <div id="footer">
+            <div class="count">
+                <strong>总价:123</strong>
+                <button id="total_price">结算</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+
+        var vm = new Vue({
+            el:"#app",
+            data:{
+            },
+            methods:{
+            },
+
+        })
+    </script>
+</body>
+</html>

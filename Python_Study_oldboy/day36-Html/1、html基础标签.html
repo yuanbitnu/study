@@ -1,0 +1,68 @@
+<!DOCTYPE html> <!--文档声明，高速浏览去这个页面是使用HTML5编写的-->
+<html>
+    <head>
+        <title>this is my first page</title>
+        <meta charset="utf-8"/>
+        <meta name="keywords" content="page,first"/> <!--该网页的关键字-->
+        <meta name="description" content="2019-12-7"/> <!--网页的描述-->
+        <!-- <meta http-equiv="refresh" content="5,url = https://www.baidu.com"/>网页的请求重定向 -->
+    </head>
+    <body>
+        <!-- 网站主体内容 -->
+        <h1>一级标题，最重要，有利于浏览器检索，一般一个页面只有一个h1</h1>
+        <h2>二级标题，可以有多个</h2>
+        <h3>三级标题，可以有多个，一般页面只用到h3</h3>
+        <h4>四级标题</h4>
+        <h5>五级标题</h5>
+        <h6>六级标题</h6>
+        <h1>h标签都是独占一行</h1>
+        <!--h1~h6标签都是独占一行 -->
+        <p>段落标签,独占一行</p>
+        窗前明月光，
+        疑似地上霜。
+        举头望明月，
+        低头思故乡。
+        <!-- 以上四句，编写的时候换行了，但浏览器解析的时候四句话是在一行，以一个空格隔开 -->
+        <br>
+        窗前明月光，<br>
+        疑似地上霜。<br>
+        举头望明月，<br>
+        低头思故乡。<!--下一行h2独占一行，因此会自动换行-->
+        <h2>在浏览器中显示换行，需要加入“br”换行符</h2>
+        <hr><!--水平线，独占一行-->
+        <a href="http://www.sina.com" target="新浪">新浪</a><br>
+        <iframe src="http://www.baidu.com" frameborder="0" width="500px" height="300px" name="新浪"></iframe>
+        <!-- iframe内联框架，可以像一个页面中引入另一个页面，但内联框架中的页面不会被浏览器检索，影响网页的SEO -->
+        <!-- src：外部页面的地址，可以是网络路径、本地相对路径、本地绝对路径-->
+        <!--width：iframe的宽度  height：iframe的高度 -->
+        <!--name：框架名字，可以将一个超链接的target属性设置为该name ，则在点击超链接是目标地址会在该iframe中打开 -->
+        iframe 没有独占一行
+        <h2>实体名/转义符</h2>
+        空格：nbsp <br>
+        小于符号：lt <br>
+        大于符号：gt <br>
+        版权符号：copy <br>
+
+        <h2>图片标签 img 向页面中引入一个外部图片</h2>
+        <img src="澳大利亚牧场图片.jpg" alt="图片无法加载时对图片的描述" width="200px" height="200px">
+        img标签没有独占一行,em标签标识语气上的强调
+        <h2>文本标签，不独占一行，部分除外(blockquote、pre标签)</h2>
+        <em>em表示语气上的强调</em><br>
+        <strong>strong表示内容的重要性</strong><br>
+        <i>i表示单纯的斜体</i> <br>
+        <b>b表示单纯的加粗</b> <br>
+        <small>small表示细则一类的内容</small> <br>
+        <cite>《cite表示参考的内容，凡是加书名号的都可以使用cite》</cite> <br>
+        <q>q表示短引用，行内引用</q> <br>
+        <blockquote>blockquote表示长引用，块级引用</blockquote> <br>
+         2<sup>3</sup>sup表示上标 <br>
+         log<sub>10</sub><sup>2</sup> sub表示下标 <br>
+         $20.00<del>$30.00</del> del表示删除 <br>
+         今天挺好<ins>ins表示插入的内容</ins> <br>
+         <pre>pre预览格式，可以保留代码中空格换行这些格式      开票给个
+             是实打实大苏打
+         </pre> <br>
+         if a = 10 <code>code 表示程序代码</code> <br>
+
+    </body>
+</html>

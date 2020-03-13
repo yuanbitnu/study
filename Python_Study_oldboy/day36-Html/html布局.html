@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="布局，结构，浮动">
+    <meta name="descripytion" content="演示HTML文档的布局">
+    <title>网页页面布局</title>
+    <style type="text/css">
+        .one{
+            height: 100px;
+            background-color: cyan;
+            float: left;
+            align:"center"
+        }
+        p{
+            height: 70px;
+            background-color: darkmagenta;
+            font-size: larger;
+            margin: 0;
+            float: left;
+        }
+        .two{
+            /* height: 30px; */
+            background-color: darkolivegreen;
+            float: right;
+        }
+        .three{
+            height: 20px;
+            background-color: darkorange;
+        }
+        h3{
+            /* margin: 0; */
+        }
+        em{
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <h3>文档流</h3>
+    <em>&nbsp;&nbsp;&nbsp;&nbsp;body中文档的结构是自上而下、从左至右的,<br/>
+        1、如果是独占一行的块元素，则会自上而下的进入文档流。<br/>
+        2、如果是内联元素，则会在一行内从左至右的进入文档流</em>
+    <div class="three"></div>
+    <div class="one">
+        <p>span
+        </p>
+        <div class="two" >nihao</div>
+    </div>
+</body>
+</html>
