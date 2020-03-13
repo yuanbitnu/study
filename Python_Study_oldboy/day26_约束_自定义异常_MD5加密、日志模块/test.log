@@ -1,7 +1,7 @@
-10-42-2019 15:42:06 root:ERROR:this is error message
-10-42-2019 15:42:06 root:CRITICAL:this is cirtical message
-10-42-2019 15:42:06 root:ERROR:除数不能为0
+04-17-2020 21:17:09 root:ERROR:hhh
 Traceback (most recent call last):
-  File "C:\Users\17711\OneDrive\PythonCode\老男孩Python全栈开发\day26_约束_自定义异常_加密、日志模块\loging日志.py", line 29, in <module>
+  File "h:\BaiduNetdiskDownload\OneDrive\PythonCode\Python_Study_oldboy\day26_约束_自定义异常_MD5加密、日志模块\loging日志.py", line 49, in <module>
     c = a / b
 ZeroDivisionError: division by zero
+04-17-2020 21:17:09 root:ERROR:This is an customer error message
+04-17-2020 21:17:09 root:CRITICAL:This is a customer critical message

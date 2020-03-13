@@ -1,0 +1,24 @@
+html, body, #app{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #e9edf1;
+}
+.el-input{
+    border-right: none;
+    /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) */
+}
+.el-tree{
+    margin-top: 20px;
+    height: 100%;
+}
+.el-card{
+    height: 100%;
+    padding: 0;
+}
+.el-table{
+    margin-top: 16px;
+}
+.el-pagination{
+    margin-top: 16px;
+}

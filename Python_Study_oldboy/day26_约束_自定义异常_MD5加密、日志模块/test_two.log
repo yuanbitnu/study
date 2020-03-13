@@ -14,3 +14,10 @@ Traceback (most recent call last):
   File "C:\Users\17711\OneDrive\PythonCode\老男孩Python全栈开发\day26_约束_自定义异常_加密、日志模块\loging日志.py", line 32, in <module>
     c = a / b
 ZeroDivisionError: division by zero
+04-18-2020 21:18:42 root:ERROR:hhh
+Traceback (most recent call last):
+  File "h:\BaiduNetdiskDownload\OneDrive\PythonCode\Python_Study_oldboy\day26_约束_自定义异常_MD5加密、日志模块\loging日志.py", line 49, in <module>
+    c = a / b
+ZeroDivisionError: division by zero
+04-18-2020 21:18:42 root:ERROR:This is an customer error message
+04-18-2020 21:18:42 root:CRITICAL:This is a customer critical message

@@ -5,7 +5,7 @@ project_path = os.path.dirname(os.path.dirname(__file__))
 # print(project_path)
 sys.path.append(project_path)
 # sys.path.insert(0,project_path)
-# print(sys.path)
+print(sys.path)
 from core import staff_operate, login_verification
 from lib import general
 

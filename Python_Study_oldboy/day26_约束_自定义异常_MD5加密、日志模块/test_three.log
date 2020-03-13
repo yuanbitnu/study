@@ -1,3 +1,9 @@
 
 2019-08-10 17:01:28,030 root ERROR This is an customer error message
 2019-08-10 17:01:28,030 root CRITICAL This is a customer critical message
+2020-03-04 21:16:16,635 root ERROR This is an customer error message
+2020-03-04 21:16:16,636 root CRITICAL This is a customer critical message
+2020-03-04 21:17:09,572 root ERROR This is an customer error message
+2020-03-04 21:17:09,573 root CRITICAL This is a customer critical message
+2020-03-04 21:18:42,037 root ERROR This is an customer error message
+2020-03-04 21:18:42,037 root CRITICAL This is a customer critical message
