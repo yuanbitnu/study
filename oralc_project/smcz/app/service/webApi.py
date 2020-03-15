@@ -26,19 +26,22 @@ def getMenus():
 
 @app.route('/companys',methods=['GET'])
 def getCompanyTree():
-    errorLogger.logger.info('##############################################')
     companyTreeList = zf_company.getcompanyTree()
     if companyTreeList == statuCode.StatuCode.errorCode.value:
         respon = {"meta":{"msg":"获取单位信息列表失败","status":statuCode.StatuCode.errorCode.value}}
     else:
         respon = {"data":companyTreeList,"meta":{"msg":"获取单位信息列表成功","status":statuCode.StatuCode.successCode.value}}
-        res = json.dumps(respon,ensure_ascii= False)
-        return res
+    res = json.dumps(respon,ensure_ascii= False)
+    return res
 
 @app.route('/ukeys',methods = ['GET'])
 def getUkeysLis():
-    compayId = int(request.args.get('compayId'))
-    print(compayId,type(compayId))
+    paramId = request.args.get('companyId')
+    compayId = None
+    if type(paramId) is str:
+        compayId = int(paramId)
+    else:
+        compayId  = paramId
     ukeys = None
     if compayId == None or compayId == 0:
         ukeys = zf_ukey.getUkeysBycompanyId()
@@ -48,8 +51,43 @@ def getUkeysLis():
         respon = {"meta":{"msg":"获取ukey列表失败","status":statuCode.StatuCode.errorCode.value}}
     else:
         respon = {"data":ukeys,"meta":{"msg":"获取ukey列表成功","status":statuCode.StatuCode.successCode.value}}
-        res = json.dumps(respon,ensure_ascii= False)
-        return res
+    res = json.dumps(respon,ensure_ascii= False)
+    return res
+@app.route('/ukeyids',methods = ['GET'])
+def getUkeyIdLis():
+    ukeyIdLisDict = zf_ukey.getUkeyIdLis()
+    if ukeyIdLisDict == statuCode.StatuCode.errorCode.value:
+        respon = {"meta":{"msg":"获取ukeyID列表失败","status":statuCode.StatuCode.errorCode.value}}
+    else:
+        respon = {"data":ukeyIdLisDict,"meta":{"msg":"获取ukeyID列表成功","status":statuCode.StatuCode.successCode.value}}
+    res = json.dumps(respon,ensure_ascii= False)
+    return res
+
+@app.route('/roleids',methods = ['GET'])
+def getRoleIdLis():
+    companyId = request.args.get('companyId')
+    roleIdLisDict = zf_ukey.getHasRoleIdLis(companyId)
+    if roleIdLisDict == statuCode.StatuCode.errorCode.value:
+        respon = {"meta":{"msg":"获取roleID列表失败","status":statuCode.StatuCode.errorCode.value}}
+    else:
+        respon = {"data":roleIdLisDict,"meta":{"msg":"获取roleID列表成功","status":statuCode.StatuCode.successCode.value}}
+    res = json.dumps(respon,ensure_ascii= False)
+    return res
+
+@app.route('/insUkey',methods = ['post'])
+def insertUkey():
+    data = request.get_json(silent=True)
+    # print(data)
+    # print(type(data))
+    if data['ukeyId'] != '':
+        usetime = tools.ToolsHelp.getCurrentTime()
+        res = zf_ukey.insertUkey(data['ukeyId'],data['name'],data['mobile'],data['carNum'],data['companyId'],data['roleId'],useTime = usetime,isUse=1)
+        if res != statuCode.StatuCode.successCode.value:
+            return {"meta":{"msg":"插入Ukey失败","status":statuCode.StatuCode.errorCode.value}}
+        else:
+            return {"data":data,"meta":{"msg":"插入Ukey成功","status":statuCode.StatuCode.successCode.value}}
+    else:
+        return {"meta":{"msg":"插入Ukey失败","status":statuCode.StatuCode.errorCode.value}}
 
 
 @app.route('/roles',methods = ['GET'])
@@ -59,8 +97,8 @@ def getRoleLis():
         respon = {"meta":{"msg":"获取role列表失败","status":statuCode.StatuCode.errorCode.value}}
     else:
         respon = {"data":roles,"meta":{"msg":"获取role列表成功","status":statuCode.StatuCode.successCode.value}}
-        res = json.dumps(respon,ensure_ascii= False)
-        return res
+    res = json.dumps(respon,ensure_ascii= False)
+    return res
 
 def main():
     app.run(host='0.0.0.0',port='80')

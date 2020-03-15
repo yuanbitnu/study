@@ -13,6 +13,45 @@ from model import oracle
 from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
+
+def getUkeyIdLis():
+    comStr = 'select ukey_id from zf_ukey order by ukey_id' # 查询字符串 select ukey_id from zf_ukey order by ukey_id
+    try:
+        connection = pool.acquire() # 对oracle连接对象池中获取连接
+        cursor = connection.cursor() # 获取游标
+        cursor.execute(comStr) # 执行SQL语句
+        content = cursor.fetchall() # 获取行数据,返回一个元组类型的list列表
+        cloumns = cursor.description # 获取当前表查询的列名
+        return ToolsHelp.formateUkeyIds(content,cloumns) # 调用formateUkeyIds()工具方法格式化数据
+    except oracle.DatabaseError as msg:
+        logging.info(msg)
+        return StatuCode.selectTabelError.value
+    except Exception as e:
+        logging.info(e)
+        return StatuCode.unknowError.value
+    finally:
+        cursor.close() # 关闭游标
+        pool.release(connection) # 释放连接对象回连接池
+
+def getHasRoleIdLis(companyId:int):
+    comStr = 'select role_id from zf_ukey where ownercompanynum = :companyId' # 查询字符串 select ukey_id from zf_ukey order by ukey_id
+    try:
+        connection = pool.acquire() # 对oracle连接对象池中获取连接
+        cursor = connection.cursor() # 获取游标
+        cursor.execute(comStr,(companyId,)) # 执行SQL语句
+        content = cursor.fetchall() # 获取行数据,返回一个元组类型的list列表
+        cloumns = cursor.description # 获取当前表查询的列名
+        return ToolsHelp.formateUkeyIds(content,cloumns) # 调用formateUkeyIds()工具方法格式化数据
+    except oracle.DatabaseError as msg:
+        logging.info(msg)
+        return StatuCode.selectTabelError.value
+    except Exception as e:
+        logging.info(e)
+        return StatuCode.unknowError.value
+    finally:
+        cursor.close() # 关闭游标
+        pool.release(connection) # 释放连接对象回连接池
+
 def getUkeys():
     comStr = 'select * from zf_ukey' # 查询字符串
     try:
@@ -34,10 +73,10 @@ def getUkeys():
 
 def getUkeysBycompanyId(companyId:int = None):
     if companyId != None:
-        comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = :companyId and u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0'
+        comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = :companyId and u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0 order by u.ukey_id'
         paramers = {'companyId':companyId}
     else:
-        comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0' # 查询字符串
+        comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0 order by u.ukey_id' # 查询字符串
         paramers = {}
     try:
         connection = pool.acquire() # 对oracle连接对象池中获取连接
@@ -138,7 +177,9 @@ def updateUkey(id:int,phoneNum:str=None,companyId:int=None,roleId:int=None,useTi
 if __name__ == "__main__":
     useTime = ToolsHelp.getCurrentTime()
     # ret = updateUkey(4002,useTime=useTime,isuse=1)
-    ret = insertUkey(4002,'陈平安','1442221206','430803636755596356',100,2,useTime=useTime)
+    # ret = insertUkey(4006,'王五','1412584485','43458598883353656',304,3,useTime=useTime,isUse=1)
+    # ret = getUkeyIdLis()
+    ret = getHasRoleIdLis(100)
     # ret =delUkey(4008)
     # res = getUkeys()
     # res = getUkeysBycompanyId(100)

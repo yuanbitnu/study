@@ -78,7 +78,7 @@
                                 header-align='center'
                                 minWidth="100">
                 </el-table-column>
-                <el-table-column prop="ownermobilee"
+                <el-table-column prop="ownermobile"
                                 label="电话"
                                 align='center'
                                 header-align='center'
@@ -118,12 +118,12 @@
       </el-container>
     </el-container>
     <!-- 添加ukey对话框 -->
-    <el-dialog title="添加角色" :visible.sync="ukeyDialogFormVisible">
-      <el-form :model="ukeyForm">
-        <el-form-item label="ukeyId" :label-width="formLabelWidth">
-          <el-input v-model="ukeyForm.ukeyId" autocomplete="off"></el-input>
+    <el-dialog @close="addUkeyDialogClose" title="添加角色" :visible.sync="ukeyDialogFormVisible">
+      <el-form :model="ukeyForm" ref="addUkeyFormRef" :rules="addUkeyRules" :label-width="formLabelWidth">
+        <el-form-item label="ukeyId" prop="ukeyId" >
+          <el-input v-model="ukeyForm.ukeyId"></el-input>
         </el-form-item>
-        <el-form-item label="岗位" :label-width="formLabelWidth">
+        <el-form-item label="岗位" prop="roleId">
           <el-select v-model="ukeyForm.roleId" placeholder="请选择岗位">
             <el-option v-for=" item in roleData.roleLis"
             :key="item.r_id"
@@ -132,19 +132,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="姓名" :label-width="formLabelWidth">
-          <el-input v-model="ukeyForm.name" autocomplete="off"></el-input>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="ukeyForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth">
-          <el-input v-model="ukeyForm.mobile" autocomplete="off"></el-input>
+        <el-form-item label="电话" prop="mobile">
+          <el-input v-model="ukeyForm.mobile"></el-input>
         </el-form-item>
-        <el-form-item label="身份证号码" :label-width="formLabelWidth">
-          <el-input v-model="ukeyForm.carNum" autocomplete="off"></el-input>
+        <el-form-item label="身份证号码" prop="carNum">
+          <el-input v-model="ukeyForm.carNum"></el-input>
         </el-form-item>
-        <el-form-item label="单位名称" :label-width="formLabelWidth">
-          <el-input v-model="currentCompanyInfo.companyname" autocomplete="off"></el-input>
+        <el-form-item label="单位名称" prop="companyId">
+          <el-select v-model="ukeyForm.companyId">
+            <el-option
+            :key="currentCompanyInfo.compid"
+            :label="currentCompanyInfo.compname"
+            :value="currentCompanyInfo.compid">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="启用状态" :label-width="formLabelWidth">
+        <el-form-item label="启用状态">
           <el-switch
             v-model="ukeyForm.isUse"
             @change='isUseStateChanged(ukeyForm.isUse)'
@@ -154,8 +160,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="ukeyDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="ukeyDialogFormVisible = false">确 定</el-button>
+        <el-button @click="resetAddUkeyDialog">重置</el-button>
+        <el-button type="primary" @click="btnUkeyInsert">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -165,6 +171,87 @@
 import { mapState } from 'vuex'
 export default {
   data () {
+    var isMobileNumber = (rule, value, callback) => {
+      if (!value) {
+        return new Error('请输入电话号码')
+      } else {
+        const reg = /^1[3|4|5|7|8|9][0-9]\d{8}$/
+        const isPhone = reg.test(value)
+        value = Number(value) // 转换为数字
+        if (typeof value === 'number' && !isNaN(value)) { // 判断是否为数字
+          value = value.toString() // 转换成字符串
+          if (value.length < 0 || value.length > 12 || !isPhone) { // 判断是否为11位手机号
+            callback(new Error('手机号码格式如:138xxxx8754'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入电话号码'))
+        }
+      }
+    }
+    var isCarNumber = (rule, value, callback) => {
+      if (!value) {
+        return new Error('请输入身份证号码')
+      } else {
+        const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+        const isCarNum = reg.test(value)
+        value = Number(value) // 转换为数字
+        if (typeof value === 'number' && !isNaN(value)) { // 判断是否为数字
+          value = value.toString() // 转换成字符串
+          if (value.length < 0 || value.length > 18 || !isCarNum) { // 判断是否为18位以下的身份证号码
+            callback(new Error('身份证号码格式为18位或15位'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入身份证号码'))
+        }
+      }
+    }
+    // async getUkeyIdLis (){
+    //   const { data: res } = await this.$http.get('/ukeyids')
+    //   if (res.meta.status !== 1000) {
+    //     this.ukeyIdData.meta = res.meta
+    //     this.$message.error(res.meta.msg)
+    //   } else {
+    //     this.ukeyIdData.ukeyIdLis = res.data.ukey_id
+    //     this.ukeyIdData.meta = res.meta
+    //     this.$message.success(res.meta.msg)
+    //   }
+    // }
+    var isUkeyId = (rule, value, callback) => {
+      if (!value) {
+        return new Error('请输入ukeyId')
+      } else {
+        const reg = /^\d{4}$/
+        const isUkeyNum = reg.test(value)
+        value = Number(value) // 转换为数字
+        if (typeof value === 'number' && !isNaN(value)) { // 判断是否为数字
+          value = value.toString() // 转换成字符串
+          if (value.length < 0 || value.length !== 4 || !isUkeyNum) { // 判断是否为6位数字
+            callback(new Error('UkeyId为4位数字'))
+            // 此处访问已获取的ukeyidList进行判断
+          } else if (this.ukeyIdData.ukeyIdLis.includes(Number(value))) {
+            callback(new Error('该UkeyId已存在,请核对后重新输入'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入4位数字'))
+        }
+      }
+    }
+    var isRoleId = (rule, value, callback) => {
+      console.log(value)
+      console.log(this.roleIdData.roleIdLis)
+      console.log(this.roleIdData.roleIdLis.includes(value))
+      if (this.roleIdData.roleIdLis.includes(value)) {
+        callback(new Error('当前岗位已存在,请先进行相岗位Ukey的销毁后再登记'))
+      } else {
+        callback() // 不抛出错误整明验证没有问题
+      }
+    }
     return {
       bodyClientHeight: { // 为el-aside组件设置高度样式，以撑满整个浏览器
         height: ''
@@ -185,21 +272,54 @@ export default {
         roleLis: [],
         meta: {}
       },
+      ukeyIdData: {
+        ukeyIdLis: [],
+        meta: {}
+      },
+      roleIdData: {
+        roleIdLis: [],
+        meta: {}
+      },
       ukeyDialogFormVisible: false,
       ukeyForm: {
-        ukeyId: null,
-        roleId: null,
+        ukeyId: '',
+        roleId: '',
         name: '',
         mobile: '',
         carNum: '',
-        companyNum: null,
+        companyId: '',
         useTime: '',
         unuseTiem: '',
         isUse: true,
         idDestroy: false
       },
       formLabelWidth: '120px',
-      currentCompanyInfo: {}
+      currentCompanyInfo: {},
+      addUkeyRules: {
+        mobile: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { validator: isMobileNumber, trigger: 'blur' }
+        ],
+        companyId: [
+          { required: true, message: '请选择单位', trigger: 'change' }
+        ],
+        roleId: [
+          { required: true, message: '请选择岗位', trigger: 'change' },
+          { validator: isRoleId, trigger: 'change' }
+        ],
+        carNum: [
+          { required: true, message: '请输入身份证号码', trigger: 'blur' },
+          { validator: isCarNumber, trigger: 'blur' }
+        ],
+        ukeyId: [
+          { required: true, message: '请输入UkeyId', trigger: 'blur' },
+          { validator: isUkeyId, trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, message: '最短 2个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   created () { // 生命周期函数,页面加载完调用该方法
@@ -222,9 +342,11 @@ export default {
       const { data: res } = await this.$http.get('/roles')
       if (res.meta.status !== 1000) {
         this.roleData.meta = res.meta
+        this.$message.error(res.meta.msg)
       } else {
         this.roleData.roleLis = res.data
         this.roleData.meta = res.meta
+        this.$message.success(res.meta.msg)
       }
     },
     isUseStateChanged (isUse) {
@@ -236,33 +358,90 @@ export default {
       console.log(data)
       return data.compname.indexOf(value) !== -1
     },
-    async getUkeyList (compayId = null) {
-      if (compayId == null) {
+    async getUkeyList (companyId = null) {
+      if (companyId == null) {
         const { data: res } = await this.$http.get('/ukeys')
         if (res.meta.status !== 1000) {
           this.ukeydata.meta = res.meta
+          this.$message.error(res.meta.msg)
         } else {
           this.ukeyData.ukeyLis = res.data
           this.ukeyData.meta = res.meta
+          this.$message.success(res.meta.msg)
         }
       } else {
         const { data: res } = await this.$http.get('/ukeys', {
           params: {
-            compayId: compayId
+            companyId: companyId
           }
         })
         if (res.meta.status !== 1000) {
           this.ukeydata.meta = res.meta
+          this.$message.error(res.meta.msg)
         } else {
           this.ukeyData.ukeyLis = res.data
           this.ukeyData.meta = res.meta
+          this.$message.success(res.meta.msg)
         }
       }
     },
+    btnUkeyInsert () {
+      this.$refs.addUkeyFormRef.validate(async result => {
+        if (result) {
+          const postData = this.ukeyForm
+          postData.ukeyId = Number(postData.ukeyId)
+          postData.isUse = postData.isUse === true ? 1 : 0
+          postData.idDestroy = postData.isDistroy === true ? 1 : 0
+          const { data: res } = await this.$http.post('/insUkey', postData)
+          if (res.meta.status !== 1000) {
+            this.$message.error('添加角色失败')
+          } else {
+            this.$message.success('添加角色 ' + res.data.name + ' 成功:')
+            // 刷新列表
+            this.getUkeyList(this.currentCompanyInfo.compid)
+            // 添加一条记录消息
+            // ******
+            // 关闭添加对话框
+            this.ukeyDialogFormVisible = false
+          }
+        }
+      })
+    },
+    async getUkeyIdLis () {
+      const { data: res } = await this.$http.get('/ukeyids')
+      if (res.meta.status !== 1000) {
+        this.ukeyIdData.meta = res.meta
+        this.$message.error(res.meta.msg)
+      } else {
+        this.ukeyIdData.ukeyIdLis = res.data.ukey_id
+        this.ukeyIdData.meta = res.meta
+        this.$message.success(res.meta.msg)
+      }
+    },
+    async getRoleIdLis (companyId) {
+      const { data: res } = await this.$http.get('/roleids', {
+        params: {
+          companyId: companyId
+        }
+      })
+      if (res.meta.status !== 1000) {
+        this.roleIdData.meta = res.meta
+        this.$message.error(res.meta.msg)
+      } else {
+        this.roleIdData.roleIdLis = res.data.role_id
+        this.roleIdData.meta = res.meta
+        this.$message.success(res.meta.msg)
+      }
+    },
     nodeClick (obj) {
-      this.getUkeyList(obj.compid)
-      this.currentCompanyInfo = obj
-      console.log(this.currentCompanyInfo)
+      if (obj.levelid === 1) {
+        this.$message.error('请选择正确的单位名称')
+      } else {
+        this.getUkeyList(obj.compid)
+        this.currentCompanyInfo = obj
+        console.log(this.currentCompanyInfo)
+        this.ukeyForm.companyName = obj.compname
+      }
     },
     goBack () {
       this.$router.push('/')
@@ -271,8 +450,25 @@ export default {
 
     },
     addUkeyDialogVisible () {
-      this.getRoleLis()
-      this.ukeyDialogFormVisible = true
+      if (this.currentCompanyInfo.levelid === 2 || this.currentCompanyInfo.levelid === 3) {
+        this.getRoleLis()
+        this.ukeyForm.isUse = true
+        this.ukeyDialogFormVisible = true
+        this.getUkeyIdLis()
+        this.getRoleIdLis(this.currentCompanyInfo.compid)
+      } else {
+        this.$message.error('请在左侧选择单位后添加角色')
+      }
+    },
+    addUkeyDialogClose () {
+      console.log('222222222222')
+      console.log(this.ukeyForm)
+      this.$refs.addUkeyFormRef.resetFields() // 重置表单及验证结果
+      console.log('333333333333')
+      console.log(this.ukeyForm)
+    },
+    resetAddUkeyDialog () {
+      this.$refs.addUkeyFormRef.resetFields() // 重置表单及验证结果
     },
     showChangeUserDialog (obj) {
       console.log(obj)

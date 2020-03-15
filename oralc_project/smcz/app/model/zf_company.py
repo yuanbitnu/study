@@ -12,12 +12,12 @@ from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
 
-def getCompanysByLevel(level:int):
-    comStr = 'select * from zf_companys t where t.levelid = :id'
+def getCompanys():
+    comStr = 'select * from zf_companys'
     try:
         connection = pool.acquire() # 对oracle连接对象池中获取连接
         cursor = connection.cursor() # 获取游标
-        cursor.execute(comStr,(level,)) # 执行SQL语句
+        cursor.execute(comStr) # 执行SQL语句
         content = cursor.fetchall() # 获取行数据,返回一个元组类型的list列表
         cloumns = cursor.description # 获取当前表查询的列名
         return ToolsHelp.formateData(content,cloumns) # 调用formateData()工具方法格式化数据
@@ -31,10 +31,18 @@ def getCompanysByLevel(level:int):
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
+def getCompanysByLevel(levelId:int,companys):
+    companysByLevel =[]
+    for item in companys:
+        if item['levelid'] == levelId:
+            companysByLevel.append(item)
+    return companysByLevel
+
 def getcompanyTree():
-    lev_one = getCompanysByLevel(1)
-    lev_two = getCompanysByLevel(2)
-    lev_three = getCompanysByLevel(3)
+    companys = getCompanys()
+    lev_one = getCompanysByLevel(1,companys)
+    lev_two = getCompanysByLevel(2,companys)
+    lev_three = getCompanysByLevel(3,companys)
     if type(lev_one) == list and type(lev_two) == list and type(lev_three) == list:
         for twoItem in lev_two:
             twoItem.update({"children":[]})
