@@ -6,7 +6,7 @@ logging.basicConfig(handlers=[logging.StreamHandler(),logging.FileHandler(
 ''' 获取oracle连接池对象
 '''
 try:
-    pool = oracle.SessionPool(user='xxzx',password='Xxzx5155932',dsn='127.0.0.1/smczxx',min=2,max=5,increment=1,encoding = 'UTF-8')
+    pool = oracle.SessionPool(user='xxzx',password='Xxzx5155932',dsn='192.168.1.102/smczxx',encoding = 'UTF-8')
 except oracle.DatabaseError as msg:
     logging.info(msg) # 获取失败则写入日志
 except Exception as e:

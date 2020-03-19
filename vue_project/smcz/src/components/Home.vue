@@ -1,11 +1,11 @@
 <template>
     <div class="homeContent">
         <div class="block">
-            <div class="group"><img class="item" src="../assets/index.png"><p class="title">主页</p></div>
+            <div class="group"><img class="item" src="../assets/index.png" @click="index"><p class="title">主页</p></div>
             <!-- <div class="group"><img class="item" src="../assets/ukey.png" alt=""><p class="title">主页</p></div>
             <div class="group"><img class="item" src="../assets/company.png" alt=""><p class="title">主页</p></div>
             <div class="group"><img class="item" src="../assets/companyManage.png" alt=""><p class="title">主页</p></div> -->
-            <div class="group"><img class="item" src="../assets/seeting.png" @click="seeting"><p class="title">设置</p></div>
+            <div class="group"><img class="item" src="../assets/seeting.png" @click="setting"><p class="title">设置</p></div>
         </div>
     </div>
 </template>
@@ -16,7 +16,10 @@ export default {
     }
   },
   methods: {
-    seeting () {
+    index () {
+      this.$router.push('/list')
+    },
+    setting () {
       this.$router.push('/setting')
     }
   },

@@ -17,6 +17,7 @@ html, body, #app{
     padding: 0;
 }
 .el-table{
+    overflow: visible;
     margin-top: 16px;
 }
 .el-pagination{
