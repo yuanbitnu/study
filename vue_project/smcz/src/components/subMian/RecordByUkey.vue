@@ -1,9 +1,8 @@
 <template>
     <div>
-        <h1>11111111111</h1>
+        <h1>Ukey</h1>
     </div>
 </template>
-
 <script>
 export default {
   data () {
@@ -13,7 +12,6 @@ export default {
   }
 }
 </script>
-
-<style lang="less" scoped>
+<style lang="lsss" scoped>
 
 </style>

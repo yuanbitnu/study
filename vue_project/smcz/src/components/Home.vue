@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     index () {
-      this.$router.push('/list')
+      this.$router.push('/main')
     },
     setting () {
       this.$router.push('/setting')
