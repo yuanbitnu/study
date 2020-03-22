@@ -19,8 +19,10 @@
               default-expand-all
               :filter-node-method="filterNode"
               :expand-on-click-node = "false"
-              @node-click = "nodeClick"
-              :highlight-current = 'true'
+              @node-click ="nodeClick"
+              :highlight-current ='true'
+              node-key="compid"
+              current-node-key="0"
               ref="tree">
             </el-tree>
           </el-card>
@@ -56,19 +58,26 @@ export default {
       activeName: 'manage'
     }
   },
-  created () { // 生命周期函数,页面加载完调用该方法
-    this.bodyClientHeight.height = document.body.clientHeight - 142 + 'px' // 获取当前body高度
+  beforeCreate () {
     this.$store.dispatch('getComTreeLis') // 出发需要调用得VUEx Action中得函数
   },
+  created () { // 生命周期函数,页面加载完调用该方法
+    this.bodyClientHeight.height = document.body.clientHeight - 142 + 'px' // 获取当前body高度
+  },
   computed: {
-    ...mapState(['companyData', 'ukeyData'])
+    ...mapState(['companyData', 'ukeyData', 'isTab'])
   },
   watch: {
     filterText (newVlaue) {
       this.$refs.tree.filter(newVlaue)
+    },
+    isTab () {
+      this.$refs.tree.setCurrentKey(0)
     }
   },
   mounted () {
+    this.$router.push('/main')
+    this.$store.dispatch('setIsTab') // 改变store.state中isTab属性的状态，从而触发Main.vue中watch中的isTa()
   },
   methods: {
     // data 为tree组件传递给data属性的值,value为watch属性中filterText方法中的newvalue
@@ -78,6 +87,7 @@ export default {
       return data.compname.indexOf(value) !== -1
     },
     nodeClick (obj) {
+      console.log(obj)
       if (obj.levelid === 1) {
         this.$message.error('请选择正确的单位名称')
       } else {
@@ -86,6 +96,7 @@ export default {
       }
     },
     handleClick (tab) {
+      this.activeName = tab.name
       if (tab.name === 'manage') {
         this.$router.push('/main/list')
       } else if (tab.name === 'recordByCompany') {

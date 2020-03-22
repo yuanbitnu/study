@@ -7,5 +7,6 @@ export default {
   ukeyData: {
     ukeyLis: [],
     meta: {}
-  }
+  },
+  isTab: false
 }

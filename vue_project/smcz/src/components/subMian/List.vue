@@ -280,7 +280,8 @@ export default {
   },
   created () {
     this.bodyClientHeight.height = document.body.clientHeight - 142 + 'px' // 获取当前body高度
-    this.$store.dispatch('getUkeyList', 0)
+    this.$store.dispatch('getUkeyList')
+    this.$store.dispatch('setIsTab') // 改变store.state中isTab属性的状态，从而触发Main.vue中watch中的isTa()
   },
   mounted () {
   },

@@ -19,7 +19,6 @@ const routes = [
     path: '/main',
     name: 'Main',
     component: Main,
-    redirect: '/main/list',
     children: [
       { path: '/main/list', name: 'List', component: List },
       { path: '/main/recordByCompany', name: 'RecordByCompany', component: RecordByCompany },

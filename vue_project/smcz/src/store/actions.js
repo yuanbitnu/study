@@ -1,5 +1,5 @@
 // 包含多个接收组件 通知触发 mutation中的调用 间接更新状态的方法 的对象
-import { GETCOMTREELIS, SETCURRENTCOMPANY, GETUKEYLIST } from './mutation_types'
+import { GETCOMTREELIS, SETCURRENTCOMPANY, GETUKEYLIST, SETISTAB } from './mutation_types'
 import axios from 'axios'
 
 export default {
@@ -45,5 +45,8 @@ export default {
       }
     }
     commit(GETUKEYLIST, { data, meta })
+  },
+  setIsTab ({ commit }) {
+    commit(SETISTAB)
   }
 }
