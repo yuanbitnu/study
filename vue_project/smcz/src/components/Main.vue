@@ -30,7 +30,7 @@
         <el-main>
           <el-card :style = bodyClientHeight>
             <el-tabs v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane label="Ukey管理" name="manage"></el-tab-pane>
+              <el-tab-pane label="Ukey管理" name="ukeyManage"></el-tab-pane>
               <el-tab-pane label="单位记录查询" name="recordByCompany"></el-tab-pane>
               <el-tab-pane label="Ukey记录查询" name="recordByUkey"></el-tab-pane>
             </el-tabs>
@@ -55,7 +55,7 @@ export default {
         children: 'children',
         label: 'compname'
       },
-      activeName: 'manage'
+      activeName: 'ukeyManage'
     }
   },
   beforeCreate () {
@@ -96,8 +96,7 @@ export default {
       }
     },
     handleClick (tab) {
-      this.activeName = tab.name
-      if (tab.name === 'manage') {
+      if (tab.name === 'ukeyManage') {
         this.$router.push('/main/list')
       } else if (tab.name === 'recordByCompany') {
         this.$router.push('/main/recordByCompany')
@@ -153,10 +152,6 @@ export default {
   .el-card{
     margin-top: 20px;
   }
-}
-.el-tree{
-  // background-color:rgb(168, 176, 225);
-  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
 }
 .el-main {
   background-color: #e9edf1;

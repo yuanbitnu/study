@@ -71,7 +71,7 @@ def getUkeys():
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def getUkeysBycompanyId(companyId:int = None):
+def getUkeysBycompanyId(companyId:int = None): # 正在使用的Ukey
     if companyId != None:
         comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = :companyId and u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0 order by u.ukey_id'
         paramers = {'companyId':companyId}

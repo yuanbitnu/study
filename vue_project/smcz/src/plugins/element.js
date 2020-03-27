@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button, Carousel, CarouselItem, Row, Col, Header, Container, Aside, Menu, Submenu, MenuItem, Main, Breadcrumb, BreadcrumbItem, Card, Input, Message, MessageBox, Table, TableColumn, Tooltip, Pagination, Tree, Tabs, TabPane, PageHeader, Dialog, Form, FormItem, Select, Option, Switch, Badge } from 'element-ui'
+import { Button, Carousel, CarouselItem, Row, Col, Header, Container, Aside, Menu, Submenu, MenuItem, Main, Breadcrumb, BreadcrumbItem, Card, Input, Message, MessageBox, Table, TableColumn, Tooltip, Pagination, Tree, Tabs, TabPane, PageHeader, Dialog, Form, FormItem, Select, Option, Switch, Badge, Collapse, CollapseItem, Timeline, TimelineItem } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Carousel)
@@ -33,6 +33,10 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Switch)
 Vue.use(Badge)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 
 Vue.prototype.$message = Message
 Vue.prototype.$messageBox = MessageBox

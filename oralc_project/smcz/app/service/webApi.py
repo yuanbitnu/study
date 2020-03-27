@@ -34,6 +34,7 @@ def getCompanyTree():
     res = json.dumps(respon,ensure_ascii= False)
     return res
 
+# 获取正在使用的Ukey
 @app.route('/ukeys',methods = ['GET'])
 def getUkeysLis():
     paramId = request.args.get('companyId')
