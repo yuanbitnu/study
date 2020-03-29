@@ -31,7 +31,7 @@
           <el-card :style = bodyClientHeight>
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane label="Ukey管理" name="ukeyManage"></el-tab-pane>
-              <el-tab-pane label="单位记录查询" name="recordByCompany"></el-tab-pane>
+              <el-tab-pane label="单位记录查询" name="recordByCompany" :disabled="companRecordTabIsDisable"></el-tab-pane>
               <el-tab-pane label="Ukey记录查询" name="recordByUkey"></el-tab-pane>
             </el-tabs>
             <router-view></router-view>
@@ -55,7 +55,8 @@ export default {
         children: 'children',
         label: 'compname'
       },
-      activeName: 'ukeyManage'
+      activeName: 'ukeyManage',
+      companRecordTabIsDisable: true
     }
   },
   beforeCreate () {
@@ -71,12 +72,13 @@ export default {
     filterText (newVlaue) {
       this.$refs.tree.filter(newVlaue)
     },
+    // 监听state中isTab的变化，有变化表示切换了tab组件，则1、设置tree组件的选中结点为根节点。2、设置state中的当前选中结点单位
     isTab () {
       this.$refs.tree.setCurrentKey(0)
+      this.$store.dispatch('setCurrentCompany', this.$refs.tree.getCurrentNode())
     }
   },
   mounted () {
-    this.$router.push('/main')
     this.$store.dispatch('setIsTab') // 改变store.state中isTab属性的状态，从而触发Main.vue中watch中的isTa()
   },
   methods: {
@@ -87,12 +89,23 @@ export default {
       return data.compname.indexOf(value) !== -1
     },
     nodeClick (obj) {
-      console.log(obj)
       if (obj.levelid === 1) {
         this.$message.error('请选择正确的单位名称')
-      } else {
+        this.activeName = 'ukeyManage'
+        this.$router.push('/main/list')
+        this.companRecordTabIsDisable = true
+      } else if (obj.levelid === 0) {
+        this.activeName = 'ukeyManage'
+        this.$router.push('/main/list')
         this.$store.dispatch('setCurrentCompany', obj)
         this.$store.dispatch('getUkeyList', obj.compid)
+        this.companRecordTabIsDisable = true
+      } else {
+        this.activeName = 'ukeyManage'
+        this.$router.push('/main/list')
+        this.$store.dispatch('setCurrentCompany', obj)
+        this.$store.dispatch('getUkeyList', obj.compid)
+        this.companRecordTabIsDisable = false
       }
     },
     handleClick (tab) {

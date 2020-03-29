@@ -3,6 +3,7 @@ from model import zf_company,zf_manage_company,zf_role,zf_ukey,zf_ukey_record
 import json
 from flask import Flask, request
 from flask_cors import CORS
+from exception.tools import ToolsHelp
 
 app = Flask(__name__)
 CORS(app,supports_credentials = True)
@@ -54,6 +55,7 @@ def getUkeysLis():
         respon = {"data":ukeys,"meta":{"msg":"获取ukey列表成功","status":statuCode.StatuCode.successCode.value}}
     res = json.dumps(respon,ensure_ascii= False)
     return res
+# 
 @app.route('/ukeyids',methods = ['GET'])
 def getUkeyIdLis():
     ukeyIdLisDict = zf_ukey.getUkeyIdLis()
@@ -78,11 +80,16 @@ def getRoleIdLis():
 @app.route('/insUkey',methods = ['post'])
 def insertUkey():
     data = request.get_json(silent=True)
-    # print(data)
-    # print(type(data))
-    if data['ukeyId'] != '':
+    formData = ToolsHelp.dict_to_object(data)
+    print(formData)
+    print(type(formData))
+    print(formData.name)
+    if formData.ukeyId != '':
         usetime = tools.ToolsHelp.getCurrentTime()
-        res = zf_ukey.insertUkey(data['ukeyId'],data['name'],data['mobile'],data['carNum'],data['companyId'],data['roleId'],useTime = usetime,isUse=1)
+        formData.useTime = usetime
+        formData.isUse = 1
+        formData.actionId = 1
+        res = zf_ukey.insertUkey(formData)
         if res != statuCode.StatuCode.successCode.value:
             return {"meta":{"msg":"插入Ukey失败","status":statuCode.StatuCode.errorCode.value}}
         else:

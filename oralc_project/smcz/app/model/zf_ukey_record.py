@@ -32,9 +32,9 @@ def getUkeyRecords():
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def insertUkeyRecord(companyNum:int,roleNum:int,ukeyNum:int,proposerName:str,applicationContent:str,createTime:str,ukeyOwnerName:str):
-    comStr = "insert into zf_ukey_record (ur_company_num,ur_role_num,ur_ukey_num,ur_ukey_name,ur_proposer,ur_application_content,ur_create_time) values (:companyNum,:roleNum,:ukeyNum,:ukeyownerName,:propName,:applicontent,to_date(:createTime,'yyyy-mm-dd HH24:MI:SS'))" # 带参数的插入语句
-    paramers = {'companyNum':companyNum,'roleNum':roleNum,'ukeyNum':ukeyNum,'propName':proposerName,'applicontent':applicationContent,'createTime':createTime,'ukeyownerName':ukeyOwnerName}
+def insertUkeyRecord(recordObj):
+    comStr = "insert into zf_ukey_record (ur_company_num,ur_role_num,ur_ukey_num,ur_action_num,ur_proposer,ur_application_content,ur_create_time) values (:companyNum,:roleNum,:ukeyNum,:actionNum,:propName,:applicontent,:createTime)" # 带参数的插入语句
+    paramers = {'companyNum':recordObj.companyNum,'roleNum':recordObj.roleNum,'ukeyNum':recordObj.ukeyNum,'actionNum':recordObj.actionNum,'propName':recordObj.proposerName,'applicontent':recordObj.applicationContent,'createTime':recordObj.createTime}
     try:
         connection = pool.acquire()
         cursor = connection.cursor()
@@ -55,6 +55,6 @@ def insertUkeyRecord(companyNum:int,roleNum:int,ukeyNum:int,proposerName:str,app
 
 if __name__ == "__main__":
     time = ToolsHelp.getCurrentTime()
-    res = insertUkeyRecord(1,2,4002,'李四','ukey遗失,重新补办',time,'李四')
+    # res = insertUkeyRecord(1,2,4002,'李四','ukey遗失,重新补办',time,'李四')
     res = getUkeyRecords()
     print(res)

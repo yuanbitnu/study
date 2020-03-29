@@ -18,6 +18,7 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -65,8 +66,9 @@ export default {
   beforeCreate () {
   },
   created () {
-    this.$store.dispatch('setIsTab')
-    this.getRoleLis()
+  },
+  computed: {
+    ...mapState(['currentCompanyInfo'])
   },
   methods: {
     async getRoleLis () {

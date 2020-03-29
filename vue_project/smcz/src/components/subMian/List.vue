@@ -116,13 +116,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="启用状态">
-          <el-switch
-            v-model="ukeyForm.isUse"
-            @change='isUseStateChanged(ukeyForm.isUse)'
-            active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
+        <el-form-item label="注册说明" prop="appContent">
+          <el-input type="textarea" v-model="ukeyForm.appContent"></el-input>
+        </el-form-item>
+        <el-form-item label="申请人" prop="proposer">
+          <el-input v-model="ukeyForm.proposer"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -248,7 +246,9 @@ export default {
         useTime: '',
         unuseTiem: '',
         isUse: true,
-        idDestroy: false
+        idDestroy: false,
+        appContent: ' xxx 申请 (注册/修改/注销/销毁) UkeyId: xxxx',
+        proposer: ''
       },
       formLabelWidth: '120px',
       addUkeyRules: {
@@ -274,6 +274,14 @@ export default {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
           { min: 2, message: '最短 2个字符', trigger: 'blur' }
+        ],
+        appContent: [
+          { required: true, message: '请填写注册说明内容', trigger: 'blur' },
+          { min: 15, message: '最短 15 个字符', trigger: 'blur' }
+        ],
+        proposer: [
+          { required: true, message: '请填写申请人', trigger: 'blur' },
+          { min: 2, message: '最短 2 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -329,6 +337,7 @@ export default {
     isUseStateChanged (isUse) {
       isUse = !isUse
     },
+    // 注册一个ukey,并创建相应的记录
     btnUkeyInsert () {
       this.$refs.addUkeyFormRef.validate(async result => {
         if (result) {
@@ -342,9 +351,7 @@ export default {
           } else {
             this.$message.success('添加角色 ' + res.data.name + ' 成功:')
             // 刷新列表
-            this.getUkeyList(this.currentCompanyInfo.compid)
-            // 添加一条记录消息
-            // ******
+            this.$store.dispatch('getUkeyList', this.currentCompanyInfo.compid)
             // 关闭添加对话框
             this.ukeyDialogFormVisible = false
           }

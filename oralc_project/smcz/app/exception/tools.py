@@ -1,5 +1,6 @@
 import time
 import datetime
+from exception.myDict import MyDict
 
 class ToolsHelp:
     @staticmethod
@@ -27,6 +28,14 @@ class ToolsHelp:
         timeArray = time.localtime(timeStamp)
         return time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
 
+    @staticmethod
+    def dict_to_object(dictObj):
+        if not isinstance(dictObj, dict):
+            return dictObj
+        inst=MyDict()
+        for k,v in dictObj.items():
+            inst[k] = ToolsHelp.dict_to_object(v)
+        return inst
 
 if __name__ == '__main__':
     res = ToolsHelp.getCurrentTime()

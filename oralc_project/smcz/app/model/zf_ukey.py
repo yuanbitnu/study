@@ -13,7 +13,7 @@ from model import oracle
 from exception.statuCode import StatuCode
 from exception.tools import ToolsHelp
 
-
+# 获取所有ukey的Id,按ID的值排序
 def getUkeyIdLis():
     comStr = 'select ukey_id from zf_ukey order by ukey_id' # 查询字符串 select ukey_id from zf_ukey order by ukey_id
     try:
@@ -71,6 +71,7 @@ def getUkeys():
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
+# 获取某个单位的ukey列表
 def getUkeysBycompanyId(companyId:int = None): # 正在使用的Ukey
     if companyId != None:
         comStr = 'select u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.usetime,u.unusetime,u.isuse,u.isdestroy,r.r_name,c.compname from zf_companys c,zf_role r, zf_ukey u where u.ownercompanynum = :companyId and u.ownercompanynum = c.compid and u.role_id = r.r_id and u.isuse = 1 and u.isdestroy =0 order by u.ukey_id'
@@ -95,29 +96,33 @@ def getUkeysBycompanyId(companyId:int = None): # 正在使用的Ukey
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
-def insertUkey(id:int,Name:str,Mobile:str,CarNum:str,CompanyId:int,roleId:int,useTime:str=None,isUse:int=None):
-    if useTime !=None and isUse!= None:
-        comStr = 'insert into zf_Ukey u (u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.ownercompanynum,u.role_id,u.usetime,u.isuse) values (:ukeyID,:ownName,:ownMobile,:ownCarNum,:ownCompanyNum,:roleId,:useTime,:isUse)' # 带参数的插入语句
-        paramers = {'ukeyID':id,'ownName':Name,'ownMobile':Mobile,'ownCarNum':CarNum,'ownCompanyNum':CompanyId,'roleId':roleId,'useTime':useTime,'isUse':isUse}
-    elif useTime ==None and isUse== None:
-        comStr = 'insert into zf_Ukey u (u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.ownercompanynum,u.role_id) values (:ukeyID,:ownName,:ownMobile,:ownCarNum,:ownCompanyNum,:roleId)' # 带参数的插入语句
-        paramers = {'ukeyID':id,'ownName':Name,'ownMobile':Mobile,'ownCarNum':CarNum,'ownCompanyNum':CompanyId,'roleId':roleId}
-    else:
-        logging.info('ukey表数据插人提供参数错误')
-        return StatuCode.unknowError.value
+# 注册ukey并写入记录
+def insertUkey(ukeyObj):
+    # Ukey插入sql语句
+    insertUkeyComStr = 'insert into zf_Ukey u (u.ukey_id,u.ownername,u.ownermobile,u.ownercarnum,u.ownercompanynum,u.role_id,u.usetime,u.isuse) values (:ukeyID,:ownName,:ownMobile,:ownCarNum,:ownCompanyNum,:roleId,:useTime,:isUse)' 
+    # 参数化
+    ukeyParamers = {'ukeyID':ukeyObj.ukeyId,'ownName':ukeyObj.name,'ownMobile':ukeyObj.mobile,'ownCarNum':ukeyObj.carNum,'ownCompanyNum':ukeyObj.companyId,'roleId':ukeyObj.roleId,'useTime':ukeyObj.useTime,'isUse':ukeyObj.isUse}
+    # 添加记录语句
+    inertUkeyRcordComStr= 'insert into zf_ukey_record r (r.ur_company_num,r.ur_role_num,r.ur_ukey_num,r.ur_action_num,r.ur_proposer,r.ur_application_content,r.ur_create_time) values (:companyId,:roleId,:ukeyId,:actionId,:proposer,:appContent,:creatTime)'
+    # 参数化
+    recordParamers = {'companyId':ukeyObj.companyId,'roleId':ukeyObj.roleId,'ukeyId':ukeyObj.ukeyId,'actionId':ukeyObj.actionId,'proposer':ukeyObj.name,'appContent':ukeyObj.appContent,'creatTime':ukeyObj.useTime}
     try:
         connection = pool.acquire()
         cursor = connection.cursor()
-        cursor.execute(comStr,paramers) # 带参数的执行语句
-        connection.commit() # 通过连接对象提交
+        connection.begin() # 事务开始
+        cursor.execute(insertUkeyComStr,ukeyParamers) # 执行uekey插入语句
+        cursor.execute(inertUkeyRcordComStr,recordParamers) # 执行添加注册Ukey记录语句
         return StatuCode.successCode.value
     except oracle.DatabaseError as msg:
         logging.info(msg)
+        connection.rollback() # 报错回滚
         return StatuCode.insertDataError.value
     except Exception as e:
         logging.info(e)
+        connection.rollback() # 报错回滚
         return StatuCode.unknowError.value
     finally:
+        connection.commit() # 通过连接对象提交
         cursor.close() # 关闭游标
         pool.release(connection) # 释放连接对象回连接池
 
